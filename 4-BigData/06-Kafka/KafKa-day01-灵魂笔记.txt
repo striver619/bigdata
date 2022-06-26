@@ -1,0 +1,105 @@
+KafKa-day01-灵魂笔记.txt
+
+一、回顾知识
+1、hadoop
+Linux
+
+2、hadoop HA
+   Linux 
+   Hadoop
+   zookeeper
+
+3、zookeeper
+   Linux
+   java
+
+4、Hive (客户端)
+   hdfs
+   Hql ->  MapReduce  ->  Yarn
+   整体来说 需要hadoop
+   mysql
+
+5、Hbase （分布式）
+     hdfs
+     mapreduce
+     整体来说 需要hadoop
+     zookeeper
+     Linux
+
+6、Sqoop
+      hive
+        mysql
+      hbase
+         hadoop
+         zookeeper
+      mysql
+
+7、kafka
+      zookeeper
+
+二、kafka 概述
+
+三、kafka 集群搭建
+
+
+bin/kafka-topics.sh --zookeeper hadoop102:2181 --list
+bin/kafka-topics.sh --zookeeper hadoop103:2181 --list
+bin/kafka-topics.sh --zookeeper hadoop102:2181,hadoop103:2181,hadoop104:2181 --list
+
+kafka-topics.sh --zookeeper hadoop104:2181 --list
+
+bin/kafka-topics.sh \
+--zookeeper hadoop102:2181 \
+--create \
+--replication-factor 2 \
+--partitions 5 \
+--topic kmn
+
+
+bin/kafka-topics.sh \
+--zookeeper hadoop102:2181 \
+--create \
+--replication-factor 2 \
+--partitions 5 \
+--topic first
+
+
+bin/kafka-topics.sh --zookeeper hadoop102:2181 --delete --topic first
+
+
+bin/kafka-console-producer.sh --broker-list hadoop102:9092 --topic first
+
+
+bin/kafka-console-consumer.sh --zookeeper hadoop102:2181 --from-beginning --topic first
+
+
+bin/kafka-topics.sh --zookeeper hadoop102:2181 --describe --topic first 
+
+
+bin/kafka-topics.sh --broker-list hadoop102:9092 --describe --topic first 
+
+
+
+bin/kafka-console-consumer.sh 
+--zookeeper hadoop102:2181,hadoop103:2181,hadoop104:2181
+--topic first 
+--consumer.config config/consumer.properties
+
+bin/kafka-console-producer.sh --broker-list hadoop102:9092,hadoop103:9092,hadoop104:9092 --topic first
+
+
+Decompiler
+
+
+bin/kafka-console-consumer.sh --zookeeper hadoop102:2181,hadoop103:2181,hadoop104:2181 --topic kmn
+
+
+
+
+bin/kafka-console-producer.sh --broker-list hadoop102:9092 --topic kmn
+
+bin/kafka-console-consumer.sh --zookeeper hadoop102:2181 --topic asd
+
+
+
+bin/kafka-console-consumer.sh --zookeeper hadoop102:2181 --topic kmn
