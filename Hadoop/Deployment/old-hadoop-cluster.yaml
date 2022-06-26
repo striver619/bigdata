@@ -1,0 +1,365 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hadoop
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hadoop-conf
+  namespace: hadoop
+data:
+  HADOOP_CONTROLLER: hadoop-controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hadoop-jobhistory
+  namespace: hadoop
+spec:
+  type: NodePort
+  selector:
+    app: hadoop-controller
+  ports:
+    - name: jobhistory
+      port: 19888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hadoop-controller
+  namespace: hadoop
+spec:
+  selector:
+    app: hadoop-controller
+  ports:
+  - name: port-0
+    port: 8030
+  - name: port-1
+    port: 8031
+  - name: port-2
+    port: 8032
+  - name: port-3
+    port: 8033
+  - name: port-4
+    port: 8040
+  - name: port-5
+    port: 8042
+  - name: port-6
+    port: 8088
+  - name: port-7
+    port: 9000
+  - name: port-8
+    port: 9864
+  - name: port-9
+    port: 9866
+  - name: port-10
+    port: 9867
+  - name: port-11
+    port: 9868
+  - name: port-12
+    port: 9870
+  - name: port-13
+    port: 10020
+  - name: port-14
+    port: 10033
+  - name: port-15
+    port: 13562
+  - name: port-16
+    port: 19888
+  - name: port-17
+    port: 33011
+  - name: port-18
+    port: 37319
+  - name: port-19
+    port: 40469
+  # Following are yarn AM app port range 60000-60020 according to mapred-site.xml
+  - name: amport-1
+    port: 60000
+  - name: amport-2
+    port: 60001
+  - name: amport-3
+    port: 60002
+  - name: amport-4
+    port: 60003
+  - name: amport-5
+    port: 60004
+  - name: amport-6
+    port: 60005
+  - name: amport-7
+    port: 60006
+  - name: amport-8
+    port: 60007
+  - name: amport-9
+    port: 60008
+  - name: amport-10
+    port: 60009
+  - name: amport-11
+    port: 60010
+  - name: amport-12
+    port: 60011
+  - name: amport-13
+    port: 60012
+  - name: amport-14
+    port: 60013
+  - name: amport-15
+    port: 60014
+  - name: amport-16
+    port: 60015
+  - name: amport-17
+    port: 60016
+  - name: amport-18
+    port: 60017
+  - name: amport-19
+    port: 60018
+  - name: amport-20
+    port: 60019
+  - name: amport-21
+    port: 60020
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hadoop-controller
+  namespace: hadoop
+  labels:
+    app: hadoop-controller
+spec:
+  nodeSelector:
+    kubernetes.io/arch: arm64
+    #kubernetes.io/hostname: openeuler-node5-arm64
+  containers:
+    - name: hadoop-master
+      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:aarch64
+      imagePullPolicy: Always
+      resources:
+        requests:
+          memory: "4096Mi"
+          cpu: "4096m"
+      env:
+        - name: HADOOP_SERVICES
+          value: "all"
+        - name: HADOOP_CONTROLLER
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HADOOP_CONTROLLER
+  restartPolicy: Always
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: hadoop-worker-arm
+#  namespace: hadoop
+#spec:
+#  selector:
+#    app: hadoop-worker-arm
+#  ports:
+#  - name: port-1
+#    port: 8040
+#  - name: port-2
+#    port: 8041
+#  - name: port-3
+#    port: 8042
+#  - name: port-4
+#    port: 9864
+#  - name: port-5
+#    port: 9865
+#  - name: port-6
+#    port: 9866
+#  - name: port-7
+#    port: 9867
+#  - name: port-8
+#    port: 45454
+#  - name: port-9
+#    port: 50010
+#  - name: port-10
+#    port: 50075
+#  - name: port-11
+#    port: 50475
+#  - name: port-12
+#    port: 50020
+#  - name: port-13
+#    port: 40555
+#  # Following are yarn AM app port range 60000-60020 according to mapred-site.xml
+#  - name: amport-1
+#    port: 60000
+#  - name: amport-2
+#    port: 60001
+#  - name: amport-3
+#    port: 60002
+#  - name: amport-4
+#    port: 60003
+#  - name: amport-5
+#    port: 60004
+#  - name: amport-6
+#    port: 60005
+#  - name: amport-7
+#    port: 60006
+#  - name: amport-8
+#    port: 60007
+#  - name: amport-9
+#    port: 60008
+#  - name: amport-10
+#    port: 60009
+#  - name: amport-11
+#    port: 60010
+#  - name: amport-12
+#    port: 60011
+#  - name: amport-13
+#    port: 60012
+#  - name: amport-14
+#    port: 60013
+#  - name: amport-15
+#    port: 60014
+#  - name: amport-16
+#    port: 60015
+#  - name: amport-17
+#    port: 60016
+#  - name: amport-18
+#    port: 60017
+#  - name: amport-19
+#    port: 60018
+#  - name: amport-20
+#    port: 60019
+#  - name: amport-21
+#    port: 60020
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#    name: hadoop-worker-arm
+#    namespace: hadoop
+#    labels:
+#      app: hadoop-worker-arm
+#spec:
+#  nodeSelector:
+#    kubernetes.io/arch: arm64
+#    #kubernetes.io/hostname: openeuler-node5-arm64
+#  containers:
+#    - name: hadoop-worker-arm
+#      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:aarch64
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          memory: "4096Mi"
+#          cpu: "4096m"
+#      env:
+#        - name: HADOOP_SERVICES
+#          value: "worker"
+#        - name: HADOOP_CONTROLLER
+#          valueFrom:
+#            configMapKeyRef:
+#              name: hadoop-conf
+#              key: HADOOP_CONTROLLER
+#  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hadoop-worker-x86
+  namespace: hadoop
+spec:
+  selector:
+    app: hadoop-worker-x86
+  ports:
+  - name: port-1
+    port: 8040
+  - name: port-2
+    port: 8041
+  - name: port-3
+    port: 8042
+  - name: port-4
+    port: 9864
+  - name: port-5
+    port: 9865
+  - name: port-6
+    port: 9866
+  - name: port-7
+    port: 9867
+  - name: port-8
+    port: 45454
+  - name: port-9
+    port: 50010
+  - name: port-10
+    port: 50075
+  - name: port-11
+    port: 50475
+  - name: port-12
+    port: 50020
+  - name: port-13
+    port: 40555
+  # Following are yarn AM app port range 60000-60020 according to mapred-site.xml
+  - name: amport-1
+    port: 60000
+  - name: amport-2
+    port: 60001
+  - name: amport-3
+    port: 60002
+  - name: amport-4
+    port: 60003
+  - name: amport-5
+    port: 60004
+  - name: amport-6
+    port: 60005
+  - name: amport-7
+    port: 60006
+  - name: amport-8
+    port: 60007
+  - name: amport-9
+    port: 60008
+  - name: amport-10
+    port: 60009
+  - name: amport-11
+    port: 60010
+  - name: amport-12
+    port: 60011
+  - name: amport-13
+    port: 60012
+  - name: amport-14
+    port: 60013
+  - name: amport-15
+    port: 60014
+  - name: amport-16
+    port: 60015
+  - name: amport-17
+    port: 60016
+  - name: amport-18
+    port: 60017
+  - name: amport-19
+    port: 60018
+  - name: amport-20
+    port: 60019
+  - name: amport-21
+    port: 60020
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: hadoop-worker-x86
+    namespace: hadoop
+    labels:
+      app: hadoop-worker-x86
+spec:
+  nodeSelector:
+    kubernetes.io/arch: amd64
+    #kubernetes.io/hostname: openeuler-node1-x86
+  containers:
+    - name: hadoop-worker-x86
+      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:x86
+      imagePullPolicy: Always
+      resources:
+        requests:
+          memory: "4096Mi"
+          cpu: "4096m"
+      env:
+        - name: HADOOP_SERVICES
+          value: "worker"
+        - name: HADOOP_CONTROLLER
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HADOOP_CONTROLLER
+  restartPolicy: Always

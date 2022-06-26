@@ -1,0 +1,33 @@
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>localhost:10020</value>
+    </property>
+    <!--Deploy Hadoop on K8s, we need to specify a certain port range and expose by k8s Service-->
+    <property>
+        <name>yarn.app.mapreduce.am.job.client.port-range</name>
+        <value>60000-60010</value>
+    </property>
+    <property>
+        <name>yarn.app.mapreduce.am.webapp.port-range</name>
+        <value>60011-60020</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+    <!--
+    <property>
+      <name>mapreduce.map.output.compress</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>mapreduce.map.output.compress.codec</name>
+      <value>org.apache.hadoop.io.compress.ZStandardCodec</value>
+    </property>
+    -->
+</configuration>

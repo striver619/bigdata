@@ -1,0 +1,178 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hadoop
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hadoop-conf
+  namespace: hadoop
+data:
+  HADOOP_CONTROLLER: controller
+  HOST_NAMES: "controller worker-arm worker-x86"
+  #HOST_NAMES: "controller worker-x86"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hadoop-web
+  namespace: hadoop
+spec:
+  type: NodePort
+  selector:
+    app: controller
+  ports:
+    - name: jobhistory
+      port: 19888
+      nodePort: 30020
+    - name: namenode
+      port: 9870
+      nodePort: 30022
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller
+  namespace: hadoop
+spec:
+  selector:
+    app: controller
+  ports:
+  - name: port-hdfs
+    port: 9000
+  - name: port-rm
+    port: 8032
+  - name: port-jhs
+    port: 10020
+  - name: port-0
+    port: 8030
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: controller
+  namespace: hadoop
+  labels:
+    app: controller
+spec:
+  nodeSelector:
+    kubernetes.io/arch: amd64
+    hadoop-controller: "true"
+  containers:
+    - name: controller
+      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:x86
+      imagePullPolicy: Always
+      resources:
+        requests:
+          memory: "4096Mi"
+          cpu: "4096m"
+      env:
+        - name: HOST_NAMES
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HOST_NAMES
+        - name: HADOOP_SERVICES
+          value: "all"
+        - name: HADOOP_CONTROLLER
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HADOOP_CONTROLLER
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-arm
+  namespace: hadoop
+spec:
+  selector:
+    app: worker-arm
+  clusterIP: None
+  ports:
+  - name: port-1
+    port: 8040
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: worker-arm
+    namespace: hadoop
+    labels:
+      app: worker-arm
+spec:
+  nodeSelector:
+    kubernetes.io/arch: arm64
+    hadoop-worker-arm64: "true"
+  containers:
+    - name: worker-arm
+      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:aarch64
+      imagePullPolicy: Always
+      resources:
+        requests:
+          memory: "4096Mi"
+          cpu: "4096m"
+      env:
+        - name: HOST_NAMES
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HOST_NAMES
+        - name: HADOOP_SERVICES
+          value: "worker"
+        - name: HADOOP_CONTROLLER
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HADOOP_CONTROLLER
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-x86
+  namespace: hadoop
+spec:
+  selector:
+    app: worker-x86
+  clusterIP: None
+  ports:
+  - name: port-1
+    port: 8040
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: worker-x86
+    namespace: hadoop
+    labels:
+      app: worker-x86
+spec:
+  nodeSelector:
+    kubernetes.io/arch: amd64
+    hadoop-worker-x86: "true"
+  containers:
+    - name: worker-x86
+      image: ghcr.io/liusheng/hadoop-3.3.0-openeuler:x86
+      imagePullPolicy: Always
+      resources:
+        requests:
+          memory: "4096Mi"
+          cpu: "4096m"
+      env:
+        - name: HOST_NAMES
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HOST_NAMES
+        - name: HADOOP_SERVICES
+          value: "worker"
+        - name: HADOOP_CONTROLLER
+          valueFrom:
+            configMapKeyRef:
+              name: hadoop-conf
+              key: HADOOP_CONTROLLER
+  restartPolicy: Always
