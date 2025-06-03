@@ -1,0 +1,55 @@
+<configuration>
+
+  <!-- 指定MapReduce框架运行在YARN资源管理系统上 -->
+  <!-- 必选配置：将MapReduce作业提交到YARN集群执行，而非独立模式（standalone） -->
+  <!-- YARN负责资源分配和任务调度，MapReduce仅作为计算框架 -->
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+
+  <!-- 启用MapReduce历史服务器（JobHistory Server） -->
+  <!-- 用于存储和展示已完成作业的详细信息（如计数器、日志、任务执行时间等） -->
+  <!-- 客户端通过RPC地址获取作业元数据，Web UI地址访问可视化界面 -->
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>node146:10020</value> <!-- 历史服务器RPC通信端口（默认10020） -->
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>node146:19888</value> <!-- 历史服务器Web界面端口（默认19888） -->
+  </property>
+
+  <!-- Shuffle服务配置（MapReduce数据传输核心组件） -->
+  <!-- Shuffle服务负责Map任务输出到Reduce任务输入的数据传输与排序 -->
+  <!-- 端口需在所有NodeManager节点开放，确保Reduce任务能拉取Map输出数据 -->
+  <property>
+    <name>mapreduce.shuffle.service.port</name>
+    <value>13562</value> <!-- Shuffle服务监听端口（默认13562，需与YARN集群网络规划一致） -->
+  </property>
+
+  <!-- Map/Reduce任务内存资源分配策略 -->
+  <!-- 以下配置控制任务的资源上限，需与YARN队列资源配置（如capacity-scheduler）协同工作 -->
+
+  <!-- Map任务内存分配 -->
+  <property>
+    <name>mapreduce.map.memory.mb</name>
+    <value>2048</value> <!-- Map任务申请的物理内存上限（MB） -->
+  </property>
+  <property>
+    <name>mapreduce.map.java.opts</name>
+    <value>-Xmx1638m</value> <!-- Map任务JVM堆内存上限（通常为内存分配的80%，避免OOM） -->
+  </property>
+
+  <!-- Reduce任务内存分配 -->
+  <property>
+    <name>mapreduce.reduce.memory.mb</name>
+    <value>4096</value> <!-- Reduce任务申请的物理内存上限（MB），通常高于Map任务 -->
+  </property>
+  <property>
+    <name>mapreduce.reduce.java.opts</name>
+    <value>-Xmx3276m</value> <!-- Reduce任务JVM堆内存上限（建议不超过内存分配的85%） -->
+  </property>
+
+</configuration>
+
