@@ -1,0 +1,19 @@
+<configuration>
+
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>node146:8020</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>0.0.0.0:0</value>
+  </property>
+
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+
+</configuration>
+
