@@ -1,0 +1,27 @@
+<configuration>
+  <!-- 配置Hadoop默认文件系统的URI -->
+  <!-- 定义客户端访问HDFS的统一入口，与hdfs-site.xml中的dfs.nameservices保持一致 -->
+  <!-- 格式：协议://命名服务ID，客户端通过此URI透明访问高可用集群 -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://node146:8020</value>
+    <!--
+    <value>hdfs://mycluster</value>
+    -->
+  </property>
+
+  <!-- 配置Hadoop全局临时目录 -->
+  <!-- 存储Hadoop运行时生成的临时文件（如NameNode元数据、DataNode数据块等） -->
+  <!-- 需确保该目录存在且有足够磁盘空间，建议使用独立存储路径 -->
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/data1/bigdata/module/hadoop-3.4.1/nndndata</value>
+  </property>
+
+  <property>
+    <name>hadoop.native.lib</name>
+    <value>false</value>
+  </property>
+
+</configuration>
+
