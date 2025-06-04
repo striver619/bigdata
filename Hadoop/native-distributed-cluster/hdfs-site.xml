@@ -7,7 +7,12 @@
 
   <property>
     <name>dfs.namenode.http-address</name>
-    <value>0.0.0.0:0</value>
+    <value>node146:9870</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.secondary.http-address</name>
+    <value>node148:9868</value>
   </property>
 
   <property>

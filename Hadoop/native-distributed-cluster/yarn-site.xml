@@ -1,23 +1,7 @@
 <configuration>
-
   <property>
-    <name>yarn.resourcemanager.cluster-id</name>
-    <value>cluster1</value>
-  </property>
-
-  <property>
-    <name>yarn.resourcemanager.rm-ids</name>
-    <value>rm1</value>
-  </property>
-
-  <property>
-    <name>yarn.resourcemanager.hostname.rm1</name>
-    <value>node146</value>
-  </property>
-
-  <property>
-    <name>yarn.resourcemanager.webapp.address.rm1</name>
-    <value>node146:8088</value>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>node147</value>
   </property>
 
   <property>
@@ -28,6 +12,11 @@
   <property>
     <name>yarn.log-aggregation-enable</name>
     <value>true</value>
+  </property>
+
+  <property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>640800</value>
   </property>
 
 </configuration>
