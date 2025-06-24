@@ -1,0 +1,15 @@
+#!/bin/bash
+
+hosts=(
+pc16-146
+pc16-147
+pc16-148
+)
+
+for host in ${hosts[@]}
+do
+    echo "-------- $host --------"
+    ssh $host "$*"
+    echo ""
+done
+
